@@ -65,7 +65,7 @@ export default function AppNavbar() {
           className="flex items-center gap-3 hover:opacity-95 transition-opacity"
         >
           <span className="text-2xl font-black text-[#d67b7b] tracking-wide font-sans">
-            Baolingo
+            ByeByeHSK
           </span>
         </a>
       </div>
@@ -116,22 +116,6 @@ export default function AppNavbar() {
       {/* KHU VỰC PHẢI: ICON TIỆN ÍCH & ĐĂNG NHẬP */}
       <div className="navbar-end gap-4 text-[#dddddf]">
         {/* Nút bật/tắt giao diện tối (Moon Icon) */}
-        <button className="btn btn-ghost btn-circle btn-sm hover:bg-zinc-800/60 text-[#dddddf]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-            />
-          </svg>
-        </button>
 
         {/* --- TÍCH HỢP CLERK AUTHENTICATION Ở ĐÂY --- */}
 
