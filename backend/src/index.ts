@@ -2,6 +2,9 @@ import express, { type Request, type Response } from 'express';
 import { connectDB } from './config/db';
 import testDbRouter from './routes/test.route';
 import vocabulariesRouter from './routes/vocabulary.route';
+import { configDotenv } from 'dotenv';
+
+configDotenv();
 
 const app = express();
 const PORT = Bun.env.PORT || 3000;

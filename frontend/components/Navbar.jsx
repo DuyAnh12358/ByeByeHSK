@@ -6,11 +6,12 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 
 export default function AppNavbar() {
   return (
     // Toàn bộ thanh Navbar với tone màu tối chủ đạo giống ảnh mẫu, kèm border mỏng ở chân
-    <div className="navbar bg-[#141416] text-[#a0a0a5] h-20 px-4 sm:px-8 border-b border-zinc-800 sticky top-0 z-50">
+    <div className="navbar bg-[#141416] text-[#a0a0a5] max-w-7xl mx-auto h-20 px-4 border-3 rounded-2xl border-zinc-800 sticky top-0 z-50">
       {/* LỀ TRÁI: LOGO BAOLINGO */}
       <div className="navbar-start gap-2">
         {/* Menu Hamburger thu gọn cho thiết bị Mobile */}
@@ -43,7 +44,7 @@ export default function AppNavbar() {
               <a href="#">Luyện tập</a>
             </li>
             <li>
-              <a href="#">Từ vựng</a>
+              <Link to="/vocabularies">Từ vựng</Link>
             </li>
             <li>
               <a href="#">Ngữ pháp</a>
@@ -82,12 +83,12 @@ export default function AppNavbar() {
             </a>
           </li>
           <li>
-            <a
-              href="#"
+            <Link
+              to="/vocabularies"
               className="hover:text-white hover:bg-[#d67b7b] transition-colors py-2 px-3 rounded-lg"
             >
               Từ vựng
-            </a>
+            </Link>
           </li>
           <li>
             <a

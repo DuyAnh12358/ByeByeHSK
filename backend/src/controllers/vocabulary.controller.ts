@@ -1,6 +1,7 @@
 import { type Request, type Response } from "express";
 import Vocabulary from "../models/Vocabulary";
-import translateBatchIfNeeded from "../utils/translate.helper";
+import { translateBatchIfNeeded } from "../utils/translate.helper";
+
 
 // @desc    Duyệt danh sách từ vựng theo Cấp độ (HSK1-HSK6 hoặc Custom)
 // @route   GET /api/vocabularies/level/:level

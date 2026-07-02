@@ -2,15 +2,17 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import AppNavbar from "../components/Navbar";
 
-export default function HomeLayout() {
+export default function HomeLayout({ children }) {
   return (
     <div className="min-h-screen bg-[#141416] flex flex-col">
       {/* Navbar cố định ở trên đầu */}
-      <AppNavbar />
+      <div className="py-5">
+        <AppNavbar />
+      </div>
 
-      {/* Nội dung các trang con (Home, sau này có thể là Practice, Vocabulary...) render vào đây */}
-      <main className="flex-1 w-full max-w-6xl mx-auto">
-        <Outlet />
+      {/* Nội dung các trang con sẽ được render vào đây */}
+      <main className="max-w-7xl mx-auto px-4 py-20 flex flex-col gap-10 justify-center items-center">
+        {children !== undefined ? children : <Outlet />}
       </main>
 
       <footer className="mt-auto border-t border-zinc-800 py-6 px-4 sm:px-8">
