@@ -1,2 +1,31 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+:root {
+  --font-body: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+  --font-hanzi: "Noto Serif SC", serif;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+.font-hanzi {
+  font-family: var(--font-hanzi);
+}
+
+/* Thanh cuộn tối, đồng bộ với theme app */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #141416;
+}
+::-webkit-scrollbar-thumb {
+  background: #303034;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #46464b;
+}
