@@ -65,10 +65,16 @@ export default function AppNavbar() {
           href="#"
           className="flex items-center gap-3 hover:opacity-95 transition-opacity"
         >
+          <img
+            src="/logo.png"
+            alt="ByeByeHSK"
+            className="h-9 w-9 object-contain"
+          />
           <span className="text-2xl font-black text-[#d67b7b] tracking-wide font-sans">
             ByeByeHSK
           </span>
         </a>
+
       </div>
 
       {/* KHU VỰC GIỮA: DANH SÁCH MENU ĐIỀU HƯỚNG (DESKTOP) */}
