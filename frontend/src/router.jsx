@@ -3,7 +3,13 @@ import { createBrowserRouter } from "react-router-dom";
 import HomeLayout from "../layouts/HomeLayout";
 import ProtectedHomeRoute from "./routes/ProtectedHomeRoute";
 
-import Home from "./pages/Home";
+import Exams from "./pages/Exams";
+import ExamsLanding from "./pages/ExamsLanding";
+import ExamTake from "./pages/ExamTake";
+import SkillPracticeTake from "./pages/SkillPracticeTake";
+
+
+
 import VocabularyLevels from "./pages/Vocabulary/VocabularyLevels";
 import VocabularyHSK1 from "./pages/Vocabulary/HSK1/VocabularyHSK1";
 import VocabularyHSK2 from "./pages/Vocabulary/HSK2/VocabularyHSK2";
@@ -28,6 +34,24 @@ export const router = createBrowserRouter([
         index: true,
         element: <ProtectedHomeRoute />,
       },
+      {
+        path: "thi-thu",
+        index: true,
+        element: <ExamsLanding />,
+      },
+      {
+        path: "thi-thu/hsk/:level",
+        element: <Exams />,
+      },
+      {
+        path: "thi-thu/hsk/:level/exam/:examNumber",
+        element: <ExamTake />,
+      },
+      {
+        path: "thi-thu/hsk/:level/exam/:examNumber/skill/:skill",
+        element: <SkillPracticeTake />,
+      },
+
     ],
   },
 

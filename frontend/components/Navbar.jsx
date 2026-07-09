@@ -62,17 +62,14 @@ export default function AppNavbar() {
 
         {/* Khối hiển thị Logo & Tên ứng dụng */}
         <a
-          href="#"
-          className="flex items-center gap-3 hover:opacity-95 transition-opacity"
+          href="/"
+          className="flex items-center gap-0 hover:opacity-95 transition-opacity"
         >
           <img
             src="/logo.png"
             alt="ByeByeHSK"
-            className="h-9 w-9 object-contain"
+            className="h-30 w-100 object-contain"
           />
-          <span className="text-2xl font-black text-[#d67b7b] tracking-wide font-sans">
-            ByeByeHSK
-          </span>
         </a>
 
       </div>
@@ -108,7 +105,7 @@ export default function AppNavbar() {
           {/* Mục "Luyện thi HSK" đi kèm Badge "MỚI" đặt tuyệt đối lên góc */}
           <li className="relative">
             <a
-              href="#"
+              href="/thi-thu"
               className="hover:text-white hover:bg-[#d67b7b] transition-colors py-2 px-3 rounded-lg"
             >
               Luyện thi HSK

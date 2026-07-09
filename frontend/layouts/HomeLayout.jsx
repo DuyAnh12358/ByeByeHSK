@@ -11,7 +11,7 @@ export default function HomeLayout({ children }) {
       </div>
 
       {/* Nội dung các trang con sẽ được render vào đây */}
-      <main className="max-w-7xl mx-auto px-4 py-20 flex flex-col gap-10 justify-center items-center">
+      <main className="w-full px-4 py-20 flex flex-col gap-10 justify-center items-center">
         {children !== undefined ? children : <Outlet />}
       </main>
 

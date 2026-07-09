@@ -95,9 +95,7 @@ function MainSection() {
               </a>
             </div>
 
-            <div className="mt-6 text-xs text-zinc-500">
-              Trải nghiệm ngay giống y chang cấu trúc banner/header & CTA
-            </div>
+            
           </div>
 
           <div className="flex-1">
@@ -105,8 +103,8 @@ function MainSection() {
               <div className="absolute -inset-3 rounded-3xl bg-gradient-to-r from-[#d67b7b]/20 to-[#e06d53]/10 blur-xl" />
               <div className="relative rounded-3xl border border-zinc-800 bg-[#141416]/40 p-4">
                 <img
-                  src={heroImg}
-                  alt="Landing"
+                  src="/logo.png"
+                  alt="byebyehsk"
                   className="w-full h-auto rounded-2xl object-cover"
                   loading="eager"
                 />
