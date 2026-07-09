@@ -117,7 +117,7 @@ export default function VocabularyLevels() {
 
       <div className="px-4 pt-6 w-full">
         {/* Thanh tìm kiếm - gõ chữ Hán, pinyin, hoặc nghĩa đều tìm được, không cần biết trước cấp độ */}
-        <label className="input input-bordered flex items-center gap-2 w-full max-w-md mx-auto mb-8">
+        <label className="input rounded-lg outline-none flex items-center gap-2 w-full max-w-md mx-auto mb-8">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
