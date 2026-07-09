@@ -11,6 +11,7 @@ import { clerkMiddleware } from '@clerk/express';
 import { connectDB } from './config/db';
 import testDbRouter from './routes/test.route';
 import vocabulariesRouter from './routes/vocabulary.route';
+import authRouter from './routes/auth.route';
 import { configDotenv } from 'dotenv';
 
 configDotenv();
@@ -21,11 +22,13 @@ const PORT = Bun.env.PORT || 3000;
 connectDB();
 
 app.use(express.json());
-
+app.use(clerkMiddleware());
 
 // 2. Kích hoạt Endpoint test kết nối database
 app.use('/api/test-db', testDbRouter);
 app.use('/api/vocabularies', vocabulariesRouter);
+app.use('/api/auth', authRouter);
+
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ status: 'success', message: 'Bun + Express MVC Server' });
