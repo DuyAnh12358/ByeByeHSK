@@ -2,7 +2,6 @@ import { type Request, type Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import { translateBatchIfNeeded } from "../utils/translate.helper";
 
-
 // @desc    Duyệt danh sách từ vựng theo Cấp độ (HSK1-HSK6 hoặc Custom)
 // @route   GET /api/vocabularies/level/:level
 // @access  Public
@@ -63,6 +62,12 @@ export default async function getVocabulariesByLevel(
 
     const vocabularies = await translateBatchIfNeeded(rawVocabularies);
 
+    const vocabulariesWithAudio = vocabularies.map((vocab) => ({
+      ...vocab,
+      // Nếu DB đã có sẵn link CDN/S3 thì dùng, nếu trống ("") thì trỏ thẳng về route TTS động vừa tạo
+      audio_url: vocab.audio_url || `/api/vocabularies/audio/${vocab._id}`,
+    }));
+
     // 5. Tính toán tổng số trang
     const totalPages = Math.ceil(totalItems / limit);
 
@@ -77,13 +82,87 @@ export default async function getVocabulariesByLevel(
         currentPage: page,
         limit,
       },
-      data: vocabularies,
+      data: vocabulariesWithAudio,
     });
   } catch (error) {
     console.error("❌ Lỗi API getVocabulariesByLevel:", error);
     return res.status(500).json({
       success: false,
       message: "Đã xảy ra lỗi hệ thống khi duyệt từ vựng theo cấp độ.",
+    });
+  }
+}
+
+export async function searchVocabulary(req: Request, res: Response) {
+  try {
+    const { q } = req.query;
+    let { page = 1, limit = 20 } = req.query as any;
+    page = parseInt(page, 10) || 1;
+    limit = parseInt(limit, 10) || 20;
+
+    const keyword = typeof q === "string" ? q.trim() : "";
+
+    if (!keyword) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng nhập từ khóa tìm kiếm (query param 'q').",
+      });
+    }
+
+    // Escape ký tự đặc biệt của regex để tránh lỗi/khai thác khi user gõ ký tự lạ (., *, (, ...)
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const searchRegex = new RegExp(escapedKeyword, "i");
+
+    // Tìm khớp ở nhiều field cùng lúc: gõ chữ Hán, pinyin (có dấu hoặc không), Hán Việt, hoặc nghĩa đều ra kết quả
+    const filter = {
+      $or: [
+        { simplified: searchRegex },
+        { traditional: searchRegex },
+        { pinyin: searchRegex },
+        { pinyin_unsigned: searchRegex },
+        { han_viet: searchRegex },
+        { meaning_vi: searchRegex },
+      ],
+    };
+
+    const skip = (page - 1) * limit;
+
+    const [totalItems, rawVocabularies] = await Promise.all([
+      Vocabulary.countDocuments(filter),
+      Vocabulary.find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ simplified: 1 })
+        .lean(),
+    ]);
+
+    const vocabularies = await translateBatchIfNeeded(rawVocabularies);
+
+    // Bổ sung audio_url fallback giống hệt getVocabulariesByLevel ở trên.
+    // Trước đây hàm search trả thẳng vocabularies gốc, nên những từ chưa có
+    // sẵn audio_url trong DB sẽ không có link -> nút loa không hiện ra ở kết quả tìm kiếm.
+    const vocabulariesWithAudio = vocabularies.map((vocab) => ({
+      ...vocab,
+      audio_url: vocab.audio_url || `/api/vocabularies/audio/${vocab._id}`,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      keyword,
+      count: vocabulariesWithAudio.length,
+      pagination: {
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page,
+        limit,
+      },
+      data: vocabulariesWithAudio,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi API searchVocabulary:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi hệ thống khi tìm kiếm từ vựng.",
     });
   }
 }
