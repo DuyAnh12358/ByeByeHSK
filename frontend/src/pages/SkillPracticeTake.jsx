@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { apiGet } from "../utils/api";
 
 const SKILL_META = {
   reading: { label: "Đọc", color: "#facc15", icon: "📖" },
@@ -8,7 +9,6 @@ const SKILL_META = {
 
 function buildDemoQuestions({ level, examNumber, skill }) {
   const baseId = `${level}-${examNumber}-${skill}`;
-  // Demo: 4 câu cho mỗi kỹ năng
   return [1, 2, 3, 4].map((n) => {
     const type = skill === "writing" ? "text" : "mcq";
 
@@ -32,11 +32,46 @@ export default function SkillPracticeTake() {
 
   const hskLevel = Number(level);
   const exNum = Number(examNumber);
-  const activeSkill = skill;
+  const activeSkill = String(skill || "").toLowerCase();
 
-  const questions = useMemo(() => {
-    if (!hskLevel || !exNum || !(activeSkill in SKILL_META)) return [];
-    return buildDemoQuestions({ level: hskLevel, examNumber: exNum, skill: activeSkill });
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadQuestions() {
+      if (!hskLevel || !exNum || !(activeSkill in SKILL_META)) {
+        setQuestions([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await apiGet(`/api/exams/questions/${hskLevel}/${exNum}/skill/${activeSkill}`);
+        if (!cancelled) {
+          setQuestions(res?.data?.questions ?? []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : String(err));
+          setQuestions(buildDemoQuestions({ level: hskLevel, examNumber: exNum, skill: activeSkill }));
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadQuestions();
+    return () => {
+      cancelled = true;
+    };
   }, [hskLevel, exNum, activeSkill]);
 
   const [answers, setAnswers] = useState({});
@@ -91,81 +126,95 @@ export default function SkillPracticeTake() {
           {skillMeta.label}
         </span>
 
-        <div className="mt-4 text-[#a0a0a5] text-xs font-semibold">{total} câu</div>
+        {loading ? (
+          <div className="mt-4 text-[#a0a0a5] text-xs font-semibold">Đang tải câu hỏi...</div>
+        ) : (
+          <div className="mt-4 text-[#a0a0a5] text-xs font-semibold">{total} câu</div>
+        )}
+
+        {error && (
+          <div className="mt-3 text-sm text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-2xl p-3">
+            Không tải được dữ liệu từ backend. Chuyển sang demo.
+          </div>
+        )}
       </div>
 
       <div className="bg-[#1c1c1e] border border-zinc-800 rounded-2xl p-5">
-        <div className="flex flex-col gap-4">
-          {questions.map((q, i) => {
-            return (
-              <div key={q.id} className="border border-zinc-800 rounded-xl p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-white text-sm font-extrabold">
-                      {i + 1}. {q.prompt}
-                    </div>
-                    <div
-                      className="text-[11px] font-bold mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-full"
-                      style={{
-                        color: skillMeta.color,
-                        background: "rgba(20,20,22,1)",
-                        border: `1px solid ${skillMeta.color}33`,
-                      }}
-                    >
-                      <span aria-hidden>{skillMeta.icon}</span>
-                      {skillMeta.label}
+        {loading ? (
+          <div className="text-[#a0a0a5] text-sm">Đang tải câu hỏi...</div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {questions.map((q, i) => {
+              return (
+                <div key={q.id} className="border border-zinc-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-white text-sm font-extrabold">
+                        {i + 1}. {q.prompt}
+                      </div>
+                      <div
+                        className="text-[11px] font-bold mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-full"
+                        style={{
+                          color: skillMeta.color,
+                          background: "rgba(20,20,22,1)",
+                          border: `1px solid ${skillMeta.color}33`,
+                        }}
+                      >
+                        <span aria-hidden>{skillMeta.icon}</span>
+                        {skillMeta.label}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {q.type === "mcq" ? (
-                  <div className="mt-4 grid grid-cols-2 gap-2">
-                    {q.options.map((opt) => {
-                      const active = answers[q.id] === opt.label;
-                      return (
-                        <button
-                          key={opt.key}
-                          type="button"
-                          disabled={submitted}
-                          onClick={() =>
-                            setAnswers((prev) => ({
-                              ...prev,
-                              [q.id]: opt.label,
-                            }))
-                          }
-                          className={[
-                            "text-xs font-bold px-3 py-2 rounded-xl border transition-colors text-left",
-                            active
-                              ? "bg-[#d67b7b] border-[#e6a3a3] text-white"
-                              : "bg-[#141416] border-zinc-800 text-[#a0a0a5] hover:border-zinc-700 hover:text-white",
-                          ].join(" ")}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="mt-4">
-                    <textarea
-                      rows={4}
-                      disabled={submitted}
-                      value={answers[q.id] ?? ""}
-                      onChange={(e) =>
-                        setAnswers((prev) => ({
-                          ...prev,
-                          [q.id]: e.target.value,
-                        }))
-                      }
-                      className="w-full bg-[#141416] border border-zinc-800 text-white text-sm rounded-xl p-3 outline-none"
-                      placeholder="Nhập câu trả lời (demo)"
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  {q.type === "mcq" ? (
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      {q.options.map((opt) => {
+                        const active = answers[q.id] === opt.label;
+                        return (
+                          <button
+                            key={opt.key}
+                            type="button"
+                            disabled={submitted}
+                            onClick={() =>
+                              setAnswers((prev) => ({
+                                ...prev,
+                                [q.id]: opt.label,
+                              }))
+                            }
+                            className={[
+                              "text-xs font-bold px-3 py-2 rounded-xl border transition-colors text-left",
+                              active
+                                ? "bg-[#d67b7b] border-[#e6a3a3] text-white"
+                                : "bg-[#141416] border-zinc-800 text-[#a0a0a5] hover:border-zinc-700 hover:text-white",
+                            ].join(" ")}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="mt-4">
+                      <textarea
+                        rows={4}
+                        disabled={submitted}
+                        value={answers[q.id] ?? ""}
+                        onChange={(e) =>
+                          setAnswers((prev) => ({
+                            ...prev,
+                            [q.id]: e.target.value,
+                          }))
+                        }
+                        className="w-full bg-[#141416] border border-zinc-800 text-white text-sm rounded-xl p-3 outline-none"
+                        placeholder="Nhập câu trả lời (demo)"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
