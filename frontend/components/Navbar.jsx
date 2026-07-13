@@ -44,10 +44,7 @@ export default function AppNavbar() {
               <a href="#">Luyện tập</a>
             </li>
             <li>
-              <Link to="/vocabularies">Từ vựng</Link>
-            </li>
-            <li>
-              <a href="#">Ngữ pháp</a>
+              <Link to="/tu-vung">Từ vựng</Link>
             </li>
             <li>
               <a href="#" className="justify-between">
@@ -87,19 +84,11 @@ export default function AppNavbar() {
           </li>
           <li>
             <Link
-              to="/vocabularies"
+              to="/tu-vung"
               className="hover:text-white hover:bg-[#d67b7b] transition-colors py-2 px-3 rounded-lg"
             >
               Từ vựng
             </Link>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="hover:text-white hover:bg-[#d67b7b] transition-colors py-2 px-3 rounded-lg"
-            >
-              Ngữ pháp
-            </a>
           </li>
 
           {/* Mục "Luyện thi HSK" đi kèm Badge "MỚI" đặt tuyệt đối lên góc */}

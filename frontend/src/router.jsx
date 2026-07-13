@@ -17,6 +17,7 @@ import VocabularyHSK3 from "./pages/Vocabulary/HSK3/VocabularyHSK3";
 import VocabularyHSK4 from "./pages/Vocabulary/HSK4/VocabularyHSK4";
 import VocabularyHSK5 from "./pages/Vocabulary/HSK5/VocabularyHSK5";
 import VocabularyHSK6 from "./pages/Vocabulary/HSK6/VocabularyHSK6";
+import VocabularyCustom from "./pages/Vocabulary/Custom/VocabularyCustom";
 
 
 export const router = createBrowserRouter([
@@ -56,33 +57,36 @@ export const router = createBrowserRouter([
   },
 
   {
-    path: "/vocabularies",
+    path: "/tu-vung",
     element: <VocabularyLevels />,
   },
 
   {
-    path: "/vocabularies/hsk1",
+    path: "/tu-vung/hsk1",
     element: <VocabularyHSK1 />,
   },
   {
-    path: "/vocabularies/hsk2",
+    path: "/tu-vung/hsk2",
     element: <VocabularyHSK2 />,
   },
   {
-    path: "/vocabularies/hsk3",
+    path: "/tu-vung/hsk3",
     element: <VocabularyHSK3 />,
   },
   {
-    path: "/vocabularies/hsk4",
+    path: "/tu-vung/hsk4",
     element: <VocabularyHSK4 />,
   },
   {
-    path: "/vocabularies/hsk5",
+    path: "/tu-vung/hsk5",
     element: <VocabularyHSK5 />,
   },
   {
-    path: "/vocabularies/hsk6",
+    path: "/tu-vung/hsk6",
     element: <VocabularyHSK6 />,
   },
+  {
+    path: "/tu-vung/custom",
+    element: <VocabularyCustom />,
+  },
 ]);
-

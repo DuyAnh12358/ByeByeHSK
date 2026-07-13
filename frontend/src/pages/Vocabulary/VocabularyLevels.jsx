@@ -5,6 +5,7 @@ import HomeLayout from "../../../layouts/HomeLayout";
 import VocabularyCard from "../../../components/VocabularyCard";
 
 function levelLabel(level) {
+  if (level === "custom") return "Custom";
   return level.toUpperCase();
 }
 
@@ -42,7 +43,7 @@ export default function VocabularyLevels() {
   const [searching, setSearching] = useState(false);
 
   const levels = useMemo(
-    () => ["hsk1", "hsk2", "hsk3", "hsk4", "hsk5", "hsk6"],
+    () => ["hsk1", "hsk2", "hsk3", "hsk4", "hsk5", "hsk6", "custom"],
     [],
   );
 
@@ -112,7 +113,7 @@ export default function VocabularyLevels() {
     <HomeLayout>
       <PageTitle
         title="Từ vựng HSK"
-        subtitle="Chọn cấp độ hoặc tìm nhanh 1 từ vựng bất kỳ"
+        subtitle="Chọn cấp độ HSK hoặc Custom, hoặc tìm nhanh 1 từ vựng bất kỳ"
       />
 
       <div className="px-4 pt-6 w-full">
@@ -179,7 +180,7 @@ export default function VocabularyLevels() {
                 key={level}
                 level={level}
                 vocabCount={counts[level]}
-                onOpen={() => navigate(`/vocabularies/${level}`)}
+                onOpen={() => navigate(`/tu-vung/${level}`)}
               />
             ))}
           </div>
